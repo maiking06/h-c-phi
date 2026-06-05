@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản trị học phí</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Quản trị</p>
+        <h1>Quản lý học phí</h1>
+      </div>
+      <div class="header-actions">
+        <span id="currentUserBadge" class="user-badge" hidden></span>
+        <a class="button ghost" href="./index.html">Trang học sinh</a>
+        <button id="logoutBtn" class="button ghost" type="button" hidden>Đăng xuất</button>
+      </div>
+    </header>
+
+    <main class="admin-layout">
+      <section id="loginPanel" class="login-panel">
+        <form id="loginForm" class="panel-form single-login">
+          <h2>Đăng nhập quản trị</h2>
+          <label class="field">
+            <span>Mật khẩu</span>
+            <input id="passwordInput" type="password" placeholder="Nhập mật khẩu quản trị" autocomplete="current-password" required />
+          </label>
+          <button class="button primary" type="submit">Đăng nhập</button>
+          <p id="loginMessage" class="message"></p>
+        </form>
+      </section>
+
+      <section id="adminPanel" class="admin-content" hidden>
+        <section class="toolbar admin-toolbar">
+          <label class="field">
+            <span>Tháng</span>
+            <input id="monthPicker" type="month" />
+          </label>
+          <label class="field">
+            <span>Tìm kiếm</span>
+            <input id="searchInput" type="search" placeholder="Tên, mã hoặc ghi chú" />
+          </label>
+          <label class="field">
+            <span>Lớp</span>
+            <select id="classFilter"></select>
+          </label>
+          <button id="rolloverBtn" class="button primary" type="button">Tạo danh sách tháng này</button>
+          <button id="exportCsvBtn" class="button secondary" type="button">Xuất CSV</button>
+        </section>
+
+        <section class="summary-grid admin-summary">
+          <article class="metric">
+            <span>Tổng học viên</span>
+            <strong id="totalStudents">0</strong>
+          </article>
+          <article class="metric paid">
+            <span>Đã thanh toán</span>
+            <strong id="paidStudents">0</strong>
+          </article>
+          <article class="metric unpaid">
+            <span>Chưa thanh toán</span>
+            <strong id="unpaidStudents">0</strong>
+          </article>
+          <article class="metric revenue">
+            <span>Đã thu tháng này</span>
+            <strong id="monthlyRevenue">0 đ</strong>
+          </article>
+          <article class="metric expected">
+            <span>Tổng phải thu</span>
+            <strong id="expectedRevenue">0 đ</strong>
+          </article>
+          <article class="metric missing">
+            <span>Còn thiếu</span>
+            <strong id="missingRevenue">0 đ</strong>
+          </article>
+        </section>
+
+        <section class="month-tools">
+          <div>
+            <h2>Tự động tạo danh sách theo tháng</h2>
+            <p id="rolloverHint">Chọn tháng mới, rồi bấm tạo danh sách để copy học sinh từ tháng trước.</p>
+          </div>
+          <p id="rolloverMessage" class="message neutral"></p>
+        </section>
+
+        <section class="workspace">
+          <div class="side-stack">
+            <form id="settingsForm" class="panel-form">
+              <h2>Thông tin trang</h2>
+              <label class="field">
+                <span>Tên lớp / trung tâm</span>
+                <input id="schoolNameInput" type="text" required />
+              </label>
+              <label class="field">
+                <span>Lịch học</span>
+                <textarea id="scheduleInput" rows="4" placeholder="Ví dụ: Thứ 2-4-6, 18:00 - 19:30"></textarea>
+              </label>
+              <label class="field">
+                <span>Chủ tài khoản</span>
+                <input id="bankOwnerInput" type="text" />
+              </label>
+              <label class="field">
+                <span>Ngân hàng</span>
+                <input id="bankNameInput" type="text" />
+              </label>
+              <label class="field">
+                <span>Mã ngân hàng VietQR</span>
+                <input id="bankCodeInput" type="text" placeholder="Ví dụ: MB" />
+              </label>
+              <label class="field">
+                <span>Số tài khoản</span>
+                <input id="accountNumberInput" type="text" />
+              </label>
+              <label class="field">
+                <span>Nội dung chuyển khoản mẫu</span>
+                <input id="transferNoteInput" type="text" />
+              </label>
+              <button class="button primary" type="submit">Lưu thông tin</button>
+            </form>
+
+            <form id="studentForm" class="panel-form">
+              <h2 id="studentFormTitle">Thêm học viên</h2>
+              <input id="editingId" type="hidden" />
+              <label class="field">
+                <span>Mã học viên</span>
+                <input id="studentCode" type="text" placeholder="Ví dụ: AN001" required />
+              </label>
+              <label class="field">
+                <span>Tên học viên</span>
+                <input id="studentName" type="text" placeholder="Ví dụ: Nguyễn Văn An" required />
+              </label>
+              <label class="field">
+                <span>Lớp</span>
+                <input id="studentClass" type="text" placeholder="Ví dụ: Lớp 6A" list="classOptions" required />
+                <datalist id="classOptions"></datalist>
+              </label>
+              <label class="field">
+                <span>Số tiền học phí</span>
+                <input id="tuitionAmount" type="number" min="0" step="1000" required />
+              </label>
+              <label class="field">
+                <span>Ghi chú nội bộ</span>
+                <input id="noteInput" type="text" />
+              </label>
+              <label class="checkbox-row">
+                <input id="paidInput" type="checkbox" />
+                <span>Đã thanh toán</span>
+              </label>
+              <div class="form-actions">
+                <button class="button primary" type="submit">Lưu học viên</button>
+                <button id="cancelEditBtn" class="button ghost" type="button">Hủy sửa</button>
+              </div>
+            </form>
+
+            <form id="passwordForm" class="panel-form">
+              <h2>Đổi mật khẩu quản trị</h2>
+              <label class="field">
+                <span>Mật khẩu hiện tại</span>
+                <input id="currentPasswordInput" type="password" autocomplete="current-password" />
+              </label>
+              <label class="field">
+                <span>Mật khẩu mới</span>
+                <input id="newPasswordInput" type="password" autocomplete="new-password" />
+              </label>
+              <button class="button secondary" type="submit">Lưu mật khẩu mới</button>
+              <p id="passwordMessage" class="message neutral"></p>
+            </form>
+          </div>
+
+          <section class="sheet-panel">
+            <div class="sheet-header">
+              <div>
+                <h2>Bảng quản trị</h2>
+                <p id="monthLabel">Tháng hiện tại</p>
+              </div>
+              <p class="read-only">Bạn có quyền chỉnh sửa</p>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Học viên</th>
+                    <th>Lớp</th>
+                    <th>Học phí</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày xác nhận</th>
+                    <th>Ghi chú</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="studentsTable"></tbody>
+              </table>
+              <p id="emptyState" class="empty-state" hidden>Chưa có học viên nào trong tháng này.</p>
+            </div>
+          </section>
+        </section>
+
+        <section class="webhook-note">
+          <h2>Tự động xác nhận khi chuyển khoản</h2>
+          <p>
+            Mỗi học viên có nút QR riêng. Nội dung chuyển khoản dùng mẫu <code>HP-{MA_HOC_VIEN}</code>, ví dụ
+            <code>HP-HS01</code>, để Casso báo về và hệ thống tự đổi trạng thái thành “Đã thanh toán”.
+          </p>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="qrDialog" class="qr-dialog">
+      <div class="qr-dialog-header">
+        <h2 id="qrTitle">QR thanh toán</h2>
+        <button id="closeQrBtn" class="button ghost small" type="button">Đóng</button>
+      </div>
+      <img id="qrImage" class="qr-image" alt="Mã QR thanh toán học phí" />
+      <dl class="qr-details">
+        <div>
+          <dt>Học viên</dt>
+          <dd id="qrStudentName">-</dd>
+        </div>
+        <div>
+          <dt>Số tiền</dt>
+          <dd id="qrAmount">-</dd>
+        </div>
+        <div>
+          <dt>Nội dung chuyển khoản</dt>
+          <dd id="qrContent">-</dd>
+        </div>
+      </dl>
+      <a id="qrDownloadLink" class="button primary" href="#" download="ma-qr-hoc-phi.png">Tải ảnh QR</a>
+    </dialog>
+
+    <script src="./admin.js"></script>
+  </body>
+</html>

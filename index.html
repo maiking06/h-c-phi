@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tra cứu học phí</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Tra cứu học phí</p>
+        <h1 id="schoolName">Lớp học</h1>
+      </div>
+      <a class="button ghost" href="./admin.html">Quản trị</a>
+    </header>
+
+    <main class="public-layout">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="hero-kicker">Thanh toán học phí thông minh</p>
+          <h2>Theo dõi trạng thái học phí từng tháng</h2>
+          <p>Quét QR đúng nội dung, hệ thống tự nhận chuyển khoản và cập nhật trạng thái cho từng học sinh.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#studentsTable">Xem danh sách</a>
+            <a class="button ghost bright" href="./admin.html">Vào quản trị</a>
+          </div>
+        </div>
+        <div class="bank-panel">
+          <h3>Thông tin chuyển khoản</h3>
+          <dl>
+            <div>
+              <dt>Chủ tài khoản</dt>
+              <dd id="bankOwner">-</dd>
+            </div>
+            <div>
+              <dt>Ngân hàng</dt>
+              <dd id="bankName">-</dd>
+            </div>
+            <div>
+              <dt>Số tài khoản</dt>
+              <dd id="accountNumber">-</dd>
+            </div>
+            <div>
+              <dt>Nội dung CK</dt>
+              <dd id="transferNote">-</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="class-info-grid">
+        <article class="info-panel">
+          <h2>Lịch học</h2>
+          <p id="scheduleText">Chưa cập nhật lịch học</p>
+        </article>
+        <article class="info-panel">
+          <h2>Danh sách học</h2>
+          <p>Chọn tháng, tìm tên hoặc mã học viên, rồi bấm Quét QR để thanh toán đúng nội dung.</p>
+        </article>
+      </section>
+
+      <section class="toolbar" aria-label="Tìm kiếm học phí">
+        <label class="field">
+          <span>Tháng</span>
+          <input id="monthPicker" type="month" />
+        </label>
+        <label class="field">
+          <span>Tìm tên hoặc mã học viên</span>
+          <input id="searchInput" type="search" placeholder="Ví dụ: An hoặc AN001" />
+        </label>
+        <label class="field">
+          <span>Lớp</span>
+          <select id="classFilter"></select>
+        </label>
+      </section>
+
+      <section class="summary-grid" aria-label="Tổng quan">
+        <article class="metric">
+          <span>Tổng học viên</span>
+          <strong id="totalStudents">0</strong>
+        </article>
+        <article class="metric paid">
+          <span>Đã thanh toán</span>
+          <strong id="paidStudents">0</strong>
+        </article>
+        <article class="metric unpaid">
+          <span>Chưa thanh toán</span>
+          <strong id="unpaidStudents">0</strong>
+        </article>
+      </section>
+
+      <section class="sheet-panel">
+        <div class="sheet-header">
+          <div>
+            <h2>Danh sách học phí</h2>
+            <p id="monthLabel">Tháng hiện tại</p>
+          </div>
+          <p class="read-only">Chỉ xem</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mã</th>
+                <th>Học viên</th>
+                <th>Lớp</th>
+                <th>Học phí</th>
+                <th>Trạng thái</th>
+                <th>Ngày xác nhận</th>
+                <th>Thanh toán</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTable"></tbody>
+          </table>
+          <p id="emptyState" class="empty-state" hidden>Không có dữ liệu phù hợp.</p>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="qrDialog" class="qr-dialog">
+      <div class="qr-dialog-header">
+        <h2 id="qrTitle">QR thanh toán</h2>
+        <button id="closeQrBtn" class="button ghost small" type="button">Đóng</button>
+      </div>
+      <img id="qrImage" class="qr-image" alt="Mã QR thanh toán học phí" />
+      <dl class="qr-details">
+        <div>
+          <dt>Học viên</dt>
+          <dd id="qrStudentName">-</dd>
+        </div>
+        <div>
+          <dt>Số tiền</dt>
+          <dd id="qrAmount">-</dd>
+        </div>
+        <div>
+          <dt>Nội dung chuyển khoản</dt>
+          <dd id="qrContent">-</dd>
+        </div>
+      </dl>
+      <a id="qrDownloadLink" class="button primary" href="#" download="ma-qr-hoc-phi.png">Tải ảnh QR</a>
+    </dialog>
+
+    <script src="./public.js"></script>
+  </body>
+</html>
