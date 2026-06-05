@@ -470,6 +470,11 @@ dd {
   font-weight: 800;
 }
 
+.read-only.warning {
+  background: var(--unpaid-soft);
+  color: var(--unpaid);
+}
+
 .table-wrap {
   overflow: auto;
 }
@@ -478,6 +483,10 @@ table {
   width: 100%;
   min-width: 1000px;
   border-collapse: collapse;
+}
+
+.compact-table {
+  min-width: 760px;
 }
 
 th,
@@ -500,6 +509,18 @@ th {
 
 tbody tr:hover {
   background: #f3faf7;
+}
+
+.unpaid-panel {
+  grid-column: 2;
+}
+
+.unpaid-row {
+  background: #fffdfb;
+}
+
+.unpaid-row:hover {
+  background: #fff7f4;
 }
 
 .status-pill {
@@ -722,6 +743,10 @@ code {
   .public-layout,
   .admin-layout {
     padding: 18px;
+  }
+
+  .unpaid-panel {
+    grid-column: auto;
   }
 }
 

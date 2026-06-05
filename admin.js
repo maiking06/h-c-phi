@@ -44,6 +44,9 @@ const newPasswordInput = document.querySelector("#newPasswordInput");
 const passwordMessage = document.querySelector("#passwordMessage");
 const studentsTable = document.querySelector("#studentsTable");
 const emptyState = document.querySelector("#emptyState");
+const unpaidTable = document.querySelector("#unpaidTable");
+const unpaidEmpty = document.querySelector("#unpaidEmpty");
+const unpaidListCount = document.querySelector("#unpaidListCount");
 const qrDialog = document.querySelector("#qrDialog");
 const closeQrBtn = document.querySelector("#closeQrBtn");
 const qrTitle = document.querySelector("#qrTitle");
@@ -224,7 +227,11 @@ function render() {
   monthLabel.textContent = monthFormatter.format(getMonthDate(monthPicker.value));
   rolloverHint.textContent = `Tạo từ ${monthFormatter.format(getMonthDate(previousMonthValue(monthPicker.value)))} sang ${monthFormatter.format(getMonthDate(monthPicker.value))}.`;
   studentsTable.replaceChildren();
+  unpaidTable.replaceChildren();
   emptyState.hidden = visibleStudents.length > 0;
+  const visibleUnpaidStudents = visibleStudents.filter((student) => !student.paid);
+  unpaidEmpty.hidden = visibleUnpaidStudents.length > 0;
+  unpaidListCount.textContent = String(visibleUnpaidStudents.length);
 
   visibleStudents.forEach((student) => {
     const row = document.createElement("tr");
@@ -240,7 +247,7 @@ function render() {
       <td data-label="Thao tác" class="row-actions"></td>
     `;
 
-    row.children[3].append(statusPill(student));
+    row.children[4].append(statusPill(student));
 
     const toggleBtn = document.createElement("button");
     toggleBtn.type = "button";
@@ -268,6 +275,40 @@ function render() {
 
     row.lastElementChild.append(qrBtn, toggleBtn, editBtn, deleteBtn);
     studentsTable.append(row);
+  });
+
+  visibleUnpaidStudents.forEach((student) => {
+    const row = document.createElement("tr");
+    row.className = "unpaid-row";
+    row.innerHTML = `
+      <td data-label="Mã">${student.code}</td>
+      <td data-label="Học viên"><strong>${student.name}</strong></td>
+      <td data-label="Lớp">${student.className || "Lớp chính"}</td>
+      <td data-label="Học phí">${currencyFormatter.format(student.amount)}</td>
+      <td data-label="Ghi chú">${student.note || "-"}</td>
+      <td data-label="Thao tác" class="row-actions"></td>
+    `;
+
+    const qrBtn = document.createElement("button");
+    qrBtn.type = "button";
+    qrBtn.className = "button small secondary";
+    qrBtn.textContent = "QR";
+    qrBtn.addEventListener("click", () => showQr(student));
+
+    const markPaidBtn = document.createElement("button");
+    markPaidBtn.type = "button";
+    markPaidBtn.className = "button small primary";
+    markPaidBtn.textContent = "Đã thanh toán";
+    markPaidBtn.addEventListener("click", () => updateStudent(student.id, { ...student, paid: true }));
+
+    const editBtn = document.createElement("button");
+    editBtn.type = "button";
+    editBtn.className = "button small ghost";
+    editBtn.textContent = "Sửa";
+    editBtn.addEventListener("click", () => fillStudentForm(student));
+
+    row.lastElementChild.append(qrBtn, markPaidBtn, editBtn);
+    unpaidTable.append(row);
   });
 }
 

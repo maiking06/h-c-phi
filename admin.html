@@ -196,6 +196,32 @@
               <p id="emptyState" class="empty-state" hidden>Chưa có học viên nào trong tháng này.</p>
             </div>
           </section>
+
+          <section class="sheet-panel unpaid-panel">
+            <div class="sheet-header">
+              <div>
+                <h2>Danh sách chưa nộp học phí</h2>
+                <p><span id="unpaidListCount">0</span> học viên còn thiếu trong tháng đang chọn</p>
+              </div>
+              <p class="read-only warning">Cần nhắc</p>
+            </div>
+            <div class="table-wrap">
+              <table class="compact-table">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Học viên</th>
+                    <th>Lớp</th>
+                    <th>Học phí</th>
+                    <th>Ghi chú</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="unpaidTable"></tbody>
+              </table>
+              <p id="unpaidEmpty" class="empty-state" hidden>Không còn học viên nào thiếu học phí trong tháng này.</p>
+            </div>
+          </section>
         </section>
 
         <section class="webhook-note">
