@@ -328,6 +328,11 @@ dd {
   color: #fff;
 }
 
+.button.cash {
+  background: linear-gradient(135deg, #f2a93b, #d68116);
+  color: #fff;
+}
+
 .button.ghost {
   color: var(--ink);
   background: rgba(255, 255, 255, 0.72);

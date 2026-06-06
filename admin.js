@@ -135,6 +135,25 @@ function showQr(student) {
   qrDialog.showModal();
 }
 
+function cashPaymentNote(student) {
+  const today = new Intl.DateTimeFormat("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(new Date());
+  return `Nộp tiền mặt ngày ${today} - ${currencyFormatter.format(student.amount)}`;
+}
+
+function markCashPayment(student) {
+  const confirmed = window.confirm(`Xác nhận ${student.name} đã nộp tiền mặt?`);
+  if (!confirmed) return;
+  updateStudent(student.id, {
+    ...student,
+    paid: true,
+    note: cashPaymentNote(student),
+  });
+}
+
 function api(path, options = {}) {
   return fetch(path, {
     ...options,
@@ -273,7 +292,14 @@ function render() {
     qrBtn.textContent = "QR";
     qrBtn.addEventListener("click", () => showQr(student));
 
-    row.lastElementChild.append(qrBtn, toggleBtn, editBtn, deleteBtn);
+    const cashBtn = document.createElement("button");
+    cashBtn.type = "button";
+    cashBtn.className = "button small cash";
+    cashBtn.textContent = "Tiền mặt";
+    cashBtn.hidden = student.paid;
+    cashBtn.addEventListener("click", () => markCashPayment(student));
+
+    row.lastElementChild.append(qrBtn, cashBtn, toggleBtn, editBtn, deleteBtn);
     studentsTable.append(row);
   });
 
@@ -301,13 +327,19 @@ function render() {
     markPaidBtn.textContent = "Đã thanh toán";
     markPaidBtn.addEventListener("click", () => updateStudent(student.id, { ...student, paid: true }));
 
+    const cashBtn = document.createElement("button");
+    cashBtn.type = "button";
+    cashBtn.className = "button small cash";
+    cashBtn.textContent = "Tiền mặt";
+    cashBtn.addEventListener("click", () => markCashPayment(student));
+
     const editBtn = document.createElement("button");
     editBtn.type = "button";
     editBtn.className = "button small ghost";
     editBtn.textContent = "Sửa";
     editBtn.addEventListener("click", () => fillStudentForm(student));
 
-    row.lastElementChild.append(qrBtn, markPaidBtn, editBtn);
+    row.lastElementChild.append(qrBtn, cashBtn, markPaidBtn, editBtn);
     unpaidTable.append(row);
   });
 }
